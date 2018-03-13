@@ -91,14 +91,14 @@ h1 {
     margin-bottom: 10px;
 }
 
-.score-panel .stars {
+.score-panel .stars, .stars-result {
     margin: 0;
     padding: 0;
     display: inline-block;
     margin: 0 5px 0 0;
 }
 
-.score-panel .stars li {
+.score-panel .stars li, .stars-result li {
     list-style: none;
     display: inline-block;
 }
@@ -107,3 +107,16 @@ h1 {
     float: right;
     cursor: pointer;
 }
+
+.stars-off {
+    color: #ddd;
+}
+
+/*
+ * Styles for the Modal form
+ */
+
+ .stars-result  {
+   font-size: 45px;
+   color: #ffa500;
+ }
