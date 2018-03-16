@@ -2,8 +2,9 @@
  * Create a list that holds all of your cards
  */
 const cards = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt",
-"fa-cube", "fa-anchor", "fa-leaf", "fa-bicycle", "fa-diamond", "fa-bomb",
-"fa-leaf", "fa-bomb", "fa-bolt", "fa-bicycle", "fa-paper-plane-o", "fa-cube"];
+  "fa-cube", "fa-anchor", "fa-leaf", "fa-bicycle", "fa-diamond", "fa-bomb",
+  "fa-leaf", "fa-bomb", "fa-bolt", "fa-bicycle", "fa-paper-plane-o", "fa-cube"
+];
 const cardClassShow = "open show";
 const cardClassMatch = "match";
 const cardClassBase = "card";
@@ -18,14 +19,14 @@ const pageCards = document.querySelectorAll('.deck .card');
  *   - add each card's HTML to the page
  */
 function resetCards() {
-    openedCards = [];
-    correctOpenedCards = [];
-    const shuffledCards = shuffle(cards);
-    const pageCards = document.querySelectorAll('.deck .card');
-    for(let i = 0; i < pageCards.length; i++) {
-      pageCards[i].className = "card";
-      pageCards[i].firstElementChild.className = "fa " + shuffledCards[i];
-    }
+  openedCards = [];
+  correctOpenedCards = [];
+  const shuffledCards = shuffle(cards);
+  // const pageCards = document.querySelectorAll('.deck .card');
+  for (let i = 0; i < pageCards.length; i++) {
+    pageCards[i].className = "card";
+    pageCards[i].firstElementChild.className = "fa " + shuffledCards[i];
+  }
 }
 
 function resetGame() {
@@ -35,36 +36,36 @@ function resetGame() {
   resetCards();
 }
 
-// document.addEventListener("DOMContentLoaded", function() {
-//   resetGame();
-// });
-
-$('.restart').on( 'click', function() {
+document.addEventListener("DOMContentLoaded", function() {
   resetGame();
 });
 
-$('.card').on('click', cardClick);
+$('.restart').on('click', function() {
+  resetGame();
+});
+
+$('.deck .card').on('click', cardClick);
 
 function msToTime(duration) {
-      var milliseconds = parseInt((duration%1000)/100)
-          , seconds = parseInt((duration/1000)%60)
-          , minutes = parseInt((duration/(1000*60))%60)
-          , hours = parseInt((duration/(1000*60*60))%24);
+  var milliseconds = parseInt((duration % 1000) / 100),
+    seconds = parseInt((duration / 1000) % 60),
+    minutes = parseInt((duration / (1000 * 60)) % 60),
+    hours = parseInt((duration / (1000 * 60 * 60)) % 24);
 
-      hours = (hours < 10) ? "0" + hours : hours;
-      minutes = (minutes < 10) ? "0" + minutes : minutes;
-      seconds = (seconds < 10) ? "0" + seconds : seconds;
+  hours = (hours < 10) ? "0" + hours : hours;
+  minutes = (minutes < 10) ? "0" + minutes : minutes;
+  seconds = (seconds < 10) ? "0" + seconds : seconds;
 
-      return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
-  }
+  return hours + ":" + minutes + ":" + seconds + "." + milliseconds;
+}
 
-$('#gameEndModal').on('show.bs.modal', function (event) {
+$('#gameEndModal').on('show.bs.modal', function(event) {
   const modal = $(this);
-  modal.find('#game-time').text('Game time: ' + msToTime(endingTime-startingTime));
+  modal.find('#game-time').text('Game time: ' + msToTime(endingTime - startingTime));
   const stars = document.querySelector('.score-panel .stars').getElementsByTagName('li');
   const modalStars = document.querySelector('.stars-result').getElementsByTagName('li');
   for (let i = 0; i < stars.length; i++) {
-     modalStars[i].className = stars[i].className;
+    modalStars[i].className = stars[i].className;
   }
 })
 
@@ -74,17 +75,18 @@ $('.restart').on('click', function() {
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
-    var currentIndex = array.length, temporaryValue, randomIndex;
+  var currentIndex = array.length,
+    temporaryValue, randomIndex;
 
-    while (currentIndex !== 0) {
-        randomIndex = Math.floor(Math.random() * currentIndex);
-        currentIndex -= 1;
-        temporaryValue = array[currentIndex];
-        array[currentIndex] = array[randomIndex];
-        array[randomIndex] = temporaryValue;
-    }
+  while (currentIndex !== 0) {
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
 
-    return array;
+  return array;
 }
 
 
@@ -112,7 +114,7 @@ function changeCardState(target, newClass) {
 function setMovesCount(cnt) {
   movesCount = cnt;
   $('.moves')[0].innerText = cnt;
-  setStarRating(starRatingMax - Math.floor(cnt/starRatingMoves));
+  setStarRating(starRatingMax - Math.floor(cnt / starRatingMoves));
 }
 
 function cardsMatches(card1, card2) {
@@ -127,37 +129,35 @@ function setStarRating(rating) {
     const starsChildren = $('.stars').children();
     for (let i = 0; i < starsChildren.length; i++) {
       if (i < rating) {
-          starsChildren[i].className = "";
-      }
-      else {
-          starsChildren[i].className = "stars-off";
+        starsChildren[i].className = "";
+      } else {
+        starsChildren[i].className = "stars-off";
       }
     }
   }
 }
 
 function compareCards() {
-    if (openedCards.length === 2) {
-      const card1 = openedCards[0].firstElementChild;
-      const card2 = openedCards[1].firstElementChild;
-      if ($(card1).hasClass($(card2).attr('class'))) {
-        cardsMatches(openedCards[0], openedCards[1])
-        if (correctOpenedCards.length === 16) {
-          gameEnd();
-          return;
-        }
+  if (openedCards.length === 2) {
+    const card1 = openedCards[0].firstElementChild;
+    const card2 = openedCards[1].firstElementChild;
+    if ($(card1).hasClass($(card2).attr('class'))) {
+      cardsMatches(openedCards[0], openedCards[1])
+      if (correctOpenedCards.length === 16) {
+        gameEnd();
+        return;
       }
-      else {
-        changeCardState(openedCards[0], "incorrectGuess");
-        changeCardState(openedCards[1], "incorrectGuess");
-        // $(openedCards[0]).toggleClass('incorrectGuess');
-        openedCards = [];
-      }
-      console.log("comparecards");
-      setMovesCount(movesCount+1);
     } else {
-
+      changeCardState(openedCards[0], "incorrectGuess");
+      changeCardState(openedCards[1], "incorrectGuess");
+      // $(openedCards[0]).toggleClass('incorrectGuess');
+      openedCards = [];
     }
+    console.log("comparecards");
+    setMovesCount(movesCount + 1);
+  } else {
+
+  }
 }
 
 function saveOpenedCard(event) {
@@ -183,15 +183,15 @@ function gameEnd() {
 
 function cardClick(event) {
   if (event.target !== this)
-     return;
+    return;
   // Game starts with first opened card
   if (gameStarted === false) {
     gameStart();
   }
   // if (!correctOpenedCards.includes(event.target)) {
-if (correctOpenedCards.indexOf(event.target) === -1) {
+  if (correctOpenedCards.indexOf(event.target) === -1) {
     changeCardState(event.target, cardClassShow);
-    setTimeout(function(){
+    setTimeout(function() {
       saveOpenedCard(event);
     }, 1000);
   }
