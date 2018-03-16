@@ -7,7 +7,7 @@ const cards = ["fa-diamond", "fa-paper-plane-o", "fa-anchor", "fa-bolt",
 const cardClassShow = "open show";
 const cardClassMatch = "match";
 const cardClassBase = "card";
-const starRatingMoves = 13;
+const starRatingMoves = 10;
 const starRatingMin = 1;
 const starRatingMax = 3;
 const pageCards = document.querySelectorAll('.deck .card');
@@ -35,9 +35,9 @@ function resetGame() {
   resetCards();
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-  resetGame();
-});
+// document.addEventListener("DOMContentLoaded", function() {
+//   resetGame();
+// });
 
 $('.restart').on( 'click', function() {
   resetGame();
@@ -148,8 +148,9 @@ function compareCards() {
         }
       }
       else {
-        changeCardState(openedCards[0], "");
-        changeCardState(openedCards[1], "");
+        changeCardState(openedCards[0], "incorrectGuess");
+        changeCardState(openedCards[1], "incorrectGuess");
+        // $(openedCards[0]).toggleClass('incorrectGuess');
         openedCards = [];
       }
       console.log("comparecards");
@@ -160,7 +161,8 @@ function compareCards() {
 }
 
 function saveOpenedCard(event) {
-  if (!openedCards.includes(event.target)) {
+  // if (!openedCards.includes(event.target)) {
+  if (openedCards.indexOf(event.target) === -1) {
     console.log(openedCards);
     openedCards.push(event.target);
     compareCards();
@@ -186,7 +188,8 @@ function cardClick(event) {
   if (gameStarted === false) {
     gameStart();
   }
-  if (!correctOpenedCards.includes(event.target)) {
+  // if (!correctOpenedCards.includes(event.target)) {
+if (correctOpenedCards.indexOf(event.target) === -1) {
     changeCardState(event.target, cardClassShow);
     setTimeout(function(){
       saveOpenedCard(event);
