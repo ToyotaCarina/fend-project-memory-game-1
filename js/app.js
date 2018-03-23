@@ -12,11 +12,11 @@ const starRatingMax = 3;
 const pageCards = document.querySelectorAll('.deck .card');
 let openedCards = []; // Uses for comparing 2 opened cards
 let correctOpenedCards = []; // Saves all correct opened cards
-let startingTime = 0;
-let endingTime = 0;
+let gameTime = 0; // In milliseconds
 let gameStarted = false;
 let movesCount = 0;
 let cardAnimationFinished = true;
+let timer;
 
 document.addEventListener('DOMContentLoaded', function() {
   resetGame();
@@ -30,9 +30,8 @@ $('.restart').on('click', function() {
 function resetGame() {
   setMovesCount(0);
   cardAnimationFinished = true;
-  startingTime = 0;
   gameStarted = false;
-  endingTime = 0;
+  resetTimer();
   resetCards();
 }
 
@@ -42,7 +41,7 @@ function resetCards() {
   correctOpenedCards = [];
   const shuffledCards = shuffle(cards);
   for (let i = 0; i < pageCards.length; i++) {
-    pageCards[i].className = 'card';
+    pageCards[i].className = cardClassBase;
     pageCards[i].firstElementChild.className = 'fa ' + shuffledCards[i];
   }
 }
@@ -100,8 +99,35 @@ function animationEnd(event) {
 
 function gameStart() {
   gameStarted = true;
-  startingTime = performance.now();
+  timerStart();
 }
+
+function timerStart() {
+  timer = setTimeout(incTime, 1000);
+}
+
+function incTime() {
+  gameTime += 1000;
+  updateGameTime();
+  timerStart();
+}
+
+function updateGameTime() {
+  $('.stopwatch time')[0].textContent = msToTime(gameTime);
+}
+
+function resetTimer() {
+  stopTimer();
+  gameTime = 0;
+  updateGameTime();
+}
+
+function stopTimer() {
+  if (timer) {
+    clearTimeout(timer);
+  }
+}
+
 
 function changeCardState(targets, newClass) {
   for (let i = 0; i < targets.length; i++) {
@@ -165,15 +191,14 @@ function setStarRating(rating) {
 }
 
 function gameEnd() {
-  endingTime = performance.now();
+  stopTimer();
   $('#gameEndModal').modal('show');
 }
 
 /** Fills modal form with duration and star number */
 $('#gameEndModal').on('show.bs.modal', function(event) {
   const modal = $(this);
-  modal.find('#game-time').text('Game time: ' + msToTime(endingTime -
-    startingTime));
+  modal.find('#game-time').text('Game time: ' + msToTime(gameTime));
   const stars = document.querySelector('.score-panel .stars').getElementsByTagName(
     'li');
   const modalStars = document.querySelector('.stars-result').getElementsByTagName(
@@ -185,8 +210,7 @@ $('#gameEndModal').on('show.bs.modal', function(event) {
 
 /** Converts duration to normal time */
 function msToTime(duration) {
-  let milliseconds = parseInt((duration % 1000) / 100),
-    seconds = parseInt((duration / 1000) % 60),
+  let seconds = parseInt((duration / 1000) % 60),
     minutes = parseInt((duration / (1000 * 60)) % 60),
     hours = parseInt((duration / (1000 * 60 * 60)) % 24);
 
@@ -194,5 +218,5 @@ function msToTime(duration) {
   minutes = (minutes < 10) ? '0' + minutes : minutes;
   seconds = (seconds < 10) ? '0' + seconds : seconds;
 
-  return hours + ':' + minutes + ':' + seconds + '.' + milliseconds;
+  return hours + ':' + minutes + ':' + seconds;
 }
