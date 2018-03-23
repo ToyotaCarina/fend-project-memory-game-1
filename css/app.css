@@ -100,7 +100,7 @@ h1 {
  */
 
 .score-panel {
-  width: calc(100% /1.4);
+  width: calc(100% /1.3);
 }
 
 .score-panel .stars, .stars-result {
